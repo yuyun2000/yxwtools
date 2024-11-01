@@ -40,6 +40,30 @@ def convert_mp3_to_wav(input_dir, output_dir):
 
             print(f"Converted {flac_file_path} to {wav_file_path}")
 
+
+def convert_m4a_to_wav(input_dir, output_dir):
+    # 检查并创建输出目录
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # 遍历输入目录下的所有文件
+    for filename in os.listdir(input_dir):
+        if filename.endswith(".m4a"):
+            flac_file_path = os.path.join(input_dir, filename)
+            wav_file_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".wav")
+
+            # 读取FLAC文件并转换为WAV文件
+            audio = AudioSegment.from_file(flac_file_path, format="m4a")
+            audio.export(wav_file_path, format="wav")
+
+            print(f"Converted {flac_file_path} to {wav_file_path}")
+
+def convert_to_wav(input_dir,output_dir):
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    convert_m4a_to_wav(input_dir, output_dir)
+    convert_mp3_to_wav(input_dir, output_dir)
+    convert_flac_to_wav(input_dir, output_dir)
 # 示例使用
 # input_directory = "./mp3"
 # output_directory = "./wav3"

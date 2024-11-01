@@ -43,7 +43,7 @@ def wavdir_resample(wavdir,sr,is_torch=False):
     '''
     for filename in os.listdir(wavdir):
         if filename.endswith('.wav'):
-            input_path = os.path.join(input_dir, filename)
+            input_path = os.path.join(wavdir, filename)
             if is_torch:
                 wavresample_torch(input_path,sr)
             else:

@@ -3,6 +3,14 @@
 '''
 import os
 from pydub import AudioSegment
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+
+def convert_file(mp3_file_path, wav_file_path,format="mp3"):
+    # 读取MP3文件并转换为WAV文件
+    audio = AudioSegment.from_file(mp3_file_path, format=format)
+    audio.export(wav_file_path, format="wav")
+    print(f"Converted {mp3_file_path} to {wav_file_path}")
 
 
 def convert_flac_to_wav(input_dir, output_dir):
@@ -10,35 +18,37 @@ def convert_flac_to_wav(input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # 遍历输入目录下的所有文件
-    for filename in os.listdir(input_dir):
-        if filename.endswith(".flac"):
-            flac_file_path = os.path.join(input_dir, filename)
-            wav_file_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".wav")
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for filename in os.listdir(input_dir):
+            if filename.endswith(".flac"):
+                mp3_file_path = os.path.join(input_dir, filename)
+                wav_file_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".wav")
+                # 提交任务到线程池
+                futures.append(executor.submit(convert_file, mp3_file_path, wav_file_path,"flac"))
+        # 等待所有任务完成
+        for future in as_completed(futures):
+            future.result()
 
-            # 读取FLAC文件并转换为WAV文件
-            audio = AudioSegment.from_file(flac_file_path, format="flac")
-            audio.export(wav_file_path, format="wav")
-
-            print(f"Converted {flac_file_path} to {wav_file_path}")
 
 
-def convert_mp3_to_wav(input_dir, output_dir):
+
+def convert_mp3_to_wav(input_dir, output_dir, max_workers=None):
     # 检查并创建输出目录
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # 遍历输入目录下的所有文件
-    for filename in os.listdir(input_dir):
-        if filename.endswith(".mp3"):
-            flac_file_path = os.path.join(input_dir, filename)
-            wav_file_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".wav")
-
-            # 读取FLAC文件并转换为WAV文件
-            audio = AudioSegment.from_file(flac_file_path, format="mp3")
-            audio.export(wav_file_path, format="wav")
-
-            print(f"Converted {flac_file_path} to {wav_file_path}")
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for filename in os.listdir(input_dir):
+            if filename.endswith(".mp3"):
+                mp3_file_path = os.path.join(input_dir, filename)
+                wav_file_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".wav")
+                # 提交任务到线程池
+                futures.append(executor.submit(convert_file, mp3_file_path, wav_file_path,"mp3"))
+        # 等待所有任务完成
+        for future in as_completed(futures):
+            future.result()
 
 
 def convert_m4a_to_wav(input_dir, output_dir):
@@ -46,17 +56,17 @@ def convert_m4a_to_wav(input_dir, output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # 遍历输入目录下的所有文件
-    for filename in os.listdir(input_dir):
-        if filename.endswith(".m4a"):
-            flac_file_path = os.path.join(input_dir, filename)
-            wav_file_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".wav")
-
-            # 读取FLAC文件并转换为WAV文件
-            audio = AudioSegment.from_file(flac_file_path, format="m4a")
-            audio.export(wav_file_path, format="wav")
-
-            print(f"Converted {flac_file_path} to {wav_file_path}")
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = []
+        for filename in os.listdir(input_dir):
+            if filename.endswith(".m4a"):
+                mp3_file_path = os.path.join(input_dir, filename)
+                wav_file_path = os.path.join(output_dir, os.path.splitext(filename)[0] + ".wav")
+                # 提交任务到线程池
+                futures.append(executor.submit(convert_file, mp3_file_path, wav_file_path,"m4a"))
+        # 等待所有任务完成
+        for future in as_completed(futures):
+            future.result()
 
 def convert_to_wav(input_dir,output_dir):
     if not os.path.exists(output_dir):
